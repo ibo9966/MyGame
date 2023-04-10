@@ -40,6 +40,8 @@ class OyunEkraniActivity : AppCompatActivity() {
     private var baslangicKontrol =false
     private val timer = Timer()
 
+    private var skor =0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +84,7 @@ class OyunEkraniActivity : AppCompatActivity() {
                         Handler(Looper.getMainLooper()).post{
                             anakarakterHareketEttirme()
                             cisimleriHareketEttirme()
+                            carpismaKontrol()
                         }
                     }
                 }
@@ -146,5 +149,41 @@ class OyunEkraniActivity : AppCompatActivity() {
 
         binding.saridaire.x =saridaireX
         binding.saridaire.y =saridaireY
+    }
+
+    fun carpismaKontrol(){
+        val saridaireMerkezX=saridaireX + binding.saridaire.width/2.0f
+        val saridaireMerkezY=saridaireY + binding.saridaire.height/2.0f
+
+        if (0.0f <= saridaireMerkezX && saridaireMerkezX <= anakarakterGenisligi
+            && anakarakterY <= saridaireMerkezY && saridaireMerkezY <= anakarakterY+anakarakterYuksekligi){
+            skor+=20
+            saridaireX=-10.0f
+        }
+
+        val kirmiziucgenMerkezX=kirmiziucgenX + binding.kirmiziucgen.width/2.0f
+        val kirmiziucgenMerkezY=kirmiziucgenY + binding.kirmiziucgen.height/2.0f
+
+        if (0.0f <= kirmiziucgenMerkezX && kirmiziucgenMerkezX <= anakarakterGenisligi
+            && anakarakterY <= kirmiziucgenMerkezY && kirmiziucgenMerkezY <= anakarakterY+anakarakterYuksekligi){
+            skor+=50
+            kirmiziucgenX=-10.0f
+        }
+
+        val siyahkareMerkezX=siyahkareX + binding.siyahkare.width/2.0f
+        val siyahkareMerkezY=siyahkareY + binding.siyahkare.height/2.0f
+
+        if (0.0f <= siyahkareMerkezX && siyahkareMerkezX <= anakarakterGenisligi
+            && anakarakterY <= siyahkareMerkezY && siyahkareMerkezY <= anakarakterY+anakarakterYuksekligi){
+
+            siyahkareX=-10.0f
+            timer.cancel()
+
+            val intent = Intent(this@OyunEkraniActivity,SonucEkraniActivity::class.java)
+            intent.putExtra("skor",skor)
+            startActivity(intent)
+            finish()
+        }
+        binding.textViewSkor.text=skor.toString()
     }
 }
